@@ -25,7 +25,8 @@ def replyStatus(update, inReplyTo, media):
     api.PostUpdate(update, media=media, in_reply_to_status_id=inReplyTo)
 
 def peutRepondre(texte):
-    if("give me a pic" in texte.lower()): return True
+    if(texte.startswith("RT @cixpicsbot:")): return False
+    elif("give me a pic" in texte.lower()): return True
     elif("give a pic" in texte.lower()): return True
     return False
 
@@ -41,13 +42,13 @@ def search(research, howMany):
                 pic = getPic(bdd.findMember(search.text))
                 try:
                     replyStatus("@" + search.user.screen_name + " hi, here is a pic of " + names[pic[0]]
-                                + " <3\n\n#CIX #씨아이엑스 " + tags[pic[0]], search.id, media=pic[1])
+                                + " :) have a nice day <3\n\n#CIX #씨아이엑스 " + tags[pic[0]], search.id, media=pic[1])
                     print("Un tweet a bien été envoyé à @" + search.user.screen_name + " ! (" + str(tweets+1) + ")")
                     tweets += 1
                     if (tweets % 30 == 0): alert.statut(tweets)
                     time.sleep(5)
                 except:
-                    print("Le tweet n'a pas pu être envoyé !", sys.exc_info()[1])
+                    alert.error(sys.exc_info()[1])
 
 def start():
     global tweets
