@@ -17,11 +17,12 @@ def tweetTest(update, media, inReplyTo):
 # first = numero de la premiere image non mise
 # last = numero de la dernière image non mise
 
-# bdd.inserer(1,86,1)
-# bdd.inserer(1,127,2)
-# bdd.inserer(1,104,3)
-# bdd.inserer(1,97,4)
-# bdd.inserer(1,101,5)
+# bdd.inserer(1,91,0)
+# bdd.inserer(87,239,1)
+# bdd.inserer(128,304,2)
+# bdd.inserer(105,288,3)
+# bdd.inserer(98,259,4)
+# bdd.inserer(102,213,5)
 
 # bdd.remplissage()
 
