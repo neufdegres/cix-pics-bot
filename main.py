@@ -11,15 +11,15 @@ api = getApi()
 
 tweets = 0
 
-names = ['bx', 'seunghun', 'yonghee', 'bae jinyoung', 'hyunsuk']
-tags = ["#BX #이병곤 #병곤 #BYOUNGGON", "#승훈 #김승훈 #SEUNGHUN",
+names = ['the whole group', 'bx', 'seunghun', 'yonghee', 'bae jinyoung', 'hyunsuk']
+tags = ["#BX #승훈 #배진영 #용희 #현석", "#BX #이병곤 #병곤 #BYOUNGGON", "#승훈 #김승훈 #SEUNGHUN",
         "#용희 #김용희 #YONGHEE", "#배진영 #BAEJINYOUNG",
         "#현석 #윤현석 #HYUNSUK"]
 
 def getPic(member):
-    if(member == None): member = random.randint(1, 5)
+    if(member == None): member = random.randint(0, 5)
     pic = bdd.getImg(member)
-    return [member-1, pic]
+    return [member, pic]
 
 def replyStatus(update, inReplyTo, media):
     api.PostUpdate(update, media=media, in_reply_to_status_id=inReplyTo)
