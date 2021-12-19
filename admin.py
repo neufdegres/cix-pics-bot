@@ -1,14 +1,20 @@
-import interactions_bdd as bdd
+# import interactions_bdd as bdd
+from typing import Type
 from config import getApi
 
 api = getApi()
 
 def printSearch(liste):
     for tweet in liste:
-        print("posté à " + tweet.created_at + " par @" + tweet.user.screen_name + " (" + str(tweet.id) + ")\n\'" + tweet.text + "\'\n")
+        print(tweet)
+        # print(tweet.media)
+        # print("posté à " + tweet.created_at + " par @" + tweet.user.screen_name + " (" + str(tweet.id) + ")\n\'" + tweet.text + "\'\n")
 
 def searchTest():
-    results = api.GetSearch(raw_query="q=to%3Acixpicsbot OR %40cixpicsbot -from%3Acixpicsbot&result_type=recent&count=50")
+    # results = api.GetSearch(raw_query="q=to%3Acixpicsbot OR %40cixpicsbot -from%3Acixpicsbot&result_type=recent&count=50")
+    # results = api.GetSearch(raw_query="q=&result_type=recent&count=50")
+    results = api.GetUserTimeline(screen_name="723gif", include_rts=False, count=1)
+    print(len(results))
     printSearch(results)
 
 def tweetTest(update, media, inReplyTo):
@@ -28,6 +34,6 @@ def tweetTest(update, media, inReplyTo):
 
 # bdd.remplissageAux()
 
-# searchTest()
+searchTest()
 
 # tweetTest("yo", "/home/ubuntu/picture_bot/pics/2/55.jpg", None)

@@ -110,3 +110,20 @@ def newMention(tweetID):
 
     except:
         alert.error(sys.exc_info()[1])
+
+def getGifAccUser(member):
+    try:
+        if member == None:
+            req = "SELECT * FROM gif_accs ORDER BY RAND()"
+        else:
+            req = "SELECT * FROM gif_accs WHERE id_member=" + str(member)+ " ORDER BY RAND()"
+        cursor.execute(req)
+
+        results = cursor.fetchall()
+
+        while(True):
+            for line in results:
+                return line[1]
+
+    except:
+        alert.error(sys.exc_info()[1])
