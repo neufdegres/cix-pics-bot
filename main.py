@@ -5,6 +5,7 @@ import alert
 import sys
 import time
 import random
+import traceback
 
 # le bot envoie au maximum 5 tweets à la fois, toutes les 15 secondes
 
@@ -73,6 +74,7 @@ def sendReply(search, cmd):
         if (tweets % 30 == 0): alert.statut(tweets)
         time.sleep(5)
     except:
+        print(traceback.format_exc())
         alert.error(sys.exc_info()[1])
 
 def replyPic(search):
@@ -89,6 +91,7 @@ def replyPic(search):
             replyStatus("@" + search.user.screen_name + " hi, here is a pic of " + names[pic[0]]
                         + " :) have a nice day <3\n\n#CIX #씨아이엑스 " + tags[pic[0]], search.id, media=pic[1])
     except:
+        print(traceback.format_exc())
         alert.error(sys.exc_info()[1])
 
 def replyGif(search):
@@ -113,13 +116,14 @@ def replyGif(search):
                         + " :) have a nice day <3\n\n(cr to: @/" + gif[2] + ")\n#CIX #씨아이엑스 "
                         + tagline + "\n" + gif[1], search.id, media=None)
     except:
+        print(traceback.format_exc())
         alert.error(sys.exc_info()[1])
 
 def getTags(membres):
     global tags
     res = ""
     a = 1
-    for pers in membres[1:6]:
+    for pers in membres[1:]:
         if(pers): res += tags[a] + " "
         a+=1
     if(res == ""): res += tags[0]
@@ -135,6 +139,7 @@ def start():
             search("to%3Acixpicsbot OR %40cixpicsbot -from%3Acixpicsbot","5")
             time.sleep(15) 
         except:
+            print(traceback.format_exc())
             err = sys.exc_info()[1]
             stop = True  
     alert.error(err)

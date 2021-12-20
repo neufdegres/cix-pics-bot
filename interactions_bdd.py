@@ -2,6 +2,8 @@ from config import getApi
 import alert
 import mysql.connector as MC
 import sys
+import traceback
+
 
 api = getApi()
 
@@ -43,6 +45,7 @@ def getImg(member):
                 return line[1]
 
     except:
+        print(traceback.format_exc())
         alert.error(sys.exc_info()[1])
         
 def getRandImg():
@@ -57,6 +60,7 @@ def getRandImg():
                 return [line[1], line[2]]
 
     except:
+        print(traceback.format_exc())
         alert.error(sys.exc_info()[1])
 
 def findMember(textBrut):
@@ -73,6 +77,7 @@ def findMember(textBrut):
         return None
 
     except:
+        print(traceback.format_exc())
         alert.error(sys.exc_info()[1])
 
 def deleteAtUser(text):
@@ -99,6 +104,7 @@ def remplissageAux():
         print("Fait !")
     
     except:
+        print(traceback.format_exc())
         alert.error(sys.exc_info()[1])
 
 def dejaRepondu(tweetID):
@@ -114,6 +120,7 @@ def dejaRepondu(tweetID):
         return False
 
     except:
+        print(traceback.format_exc())
         alert.error(sys.exc_info()[1])
 
 def newMention(tweetID):
@@ -123,6 +130,7 @@ def newMention(tweetID):
         conn.commit()
 
     except:
+        print(traceback.format_exc())
         alert.error(sys.exc_info()[1])
         
 def getGifAccUser(member):
@@ -142,4 +150,5 @@ def getGifAccUser(member):
                 return line[0]
 
     except:
+        print(traceback.format_exc())
         alert.error(sys.exc_info()[1])
