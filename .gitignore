@@ -1,7 +1,8 @@
+/__pycache__
 tables/
 autre/
 old/
 PICS/
 vps/
 tests/
-admin.py
+./admin.py

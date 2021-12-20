@@ -11,6 +11,7 @@ import random
 api = getApi()
 
 tweets = 0
+hello = False
 
 names = ['cix', 'bx', 'seunghun', 'yonghee', 'bae jinyoung', 'hyunsuk']
 tags = ["#BX #승훈 #배진영 #용희 #현석", "#BX #이병곤 #병곤 #BYOUNGGON", "#승훈 #김승훈 #SEUNGHUN",
@@ -18,31 +19,41 @@ tags = ["#BX #승훈 #배진영 #용희 #현석", "#BX #이병곤 #병곤 #BYOUN
         "#현석 #윤현석 #HYUNSUK"]
 
 def getPic(member):
-    if(member == None): member = random.randint(0, 5)
-    pic = bdd.getImg(member)
+    if(member == None): 
+        randPic = bdd.getRandImg();
+        pic = randPic[0]
+        member = randPic[1]
+    else : 
+        pic = bdd.getImg(member)
+        
     return [member, pic]
 
 def getGif(member):
+    """ 
+    0: numero du membre
+    1: lien du gif
+    2: username du gifeur
+    3: liste des booleens des hashtags
+    """
     if(member == 0): member = None
     if(member == None): acc = bdd.getGifAccUser(None)
     else: acc = bdd.getGifAccUser(member)
     link = gifs.getRandomGif(acc, member)
     return [member, link[0], link[1], link[2]]
 
-"""
-0: numero du membre
-1: lien du gif
-2: username du gifeur
-3: liste des booleens des hashtags
-"""
-
 def replyStatus(update, inReplyTo, media):
     api.PostUpdate(update, media=media, in_reply_to_status_id=inReplyTo)
 
 def getCommande(texte):
+    global hello
     if(texte.startswith("RT @cixpicsbot:")): return None
     if("give me a pic" in texte.lower()): return "pic"
     if("give me a gif" in texte.lower()): return "gif"
+    if("hello @cixpicsbot" in texte.lower()): 
+        choix = ["pic", "gif"]
+        nbr = random.randint(0, 2)
+        hello = True
+        return choix[nbr]
 
 def search(research, howMany):
     searchResults = api.GetSearch(raw_query="q="+research+"&result_type=recent&count="+howMany)
@@ -65,29 +76,42 @@ def sendReply(search, cmd):
         alert.error(sys.exc_info()[1])
 
 def replyPic(search):
+    global hello
     global names
     global tags
     pic = getPic(bdd.findMember(search.text))
     try:
-        replyStatus("@" + search.user.screen_name + " hi, here is a pic of " + names[pic[0]]
-                    + " :) have a nice day <3\n\n#CIX #씨아이엑스 " + tags[pic[0]], search.id, media=pic[1])
+        if(hello):
+            replyStatus("hello @" + search.user.screen_name +
+                        " ! have a nice day <3\n\n#CIX #씨아이엑스 " +
+                        tags[pic[0]], search.id, media=pic[1])
+        else:
+            replyStatus("@" + search.user.screen_name + " hi, here is a pic of " + names[pic[0]]
+                        + " :) have a nice day <3\n\n#CIX #씨아이엑스 " + tags[pic[0]], search.id, media=pic[1])
     except:
         alert.error(sys.exc_info()[1])
 
 def replyGif(search):
     global names
     global tags
+    global hello
     gif = getGif(bdd.findMember(search.text))
     try:
-        if(gif[0] == None): 
-            form = "your gif"
-            tagline = getTags(gif[3])
-        else: 
-            form = "a gif of "  + names[gif[0]]
-            tagline = tags[gif[0]]
-        replyStatus("@" + search.user.screen_name + " hi, here is " + form
-                    + " :) have a nice day <3\n\n(cr to: @/" + gif[2] + ")\n#CIX #씨아이엑스 "
-                    + tagline + "\n" + gif[1], search.id, media=None)
+        if(hello):
+            replyStatus("hello @" + search.user.screen_name + 
+                        " ! have a nice day <3\n\n (cr to: @/" + gif[2] 
+                        + ")\n#CIX #씨아이엑스 "+ getTags(gif[3]) + "\n" + gif[1],
+                        search.id, media=None)
+        else:
+            if(gif[0] == None): 
+                form = "your gif"
+                tagline = getTags(gif[3])
+            else: 
+                form = "a gif of "  + names[gif[0]]
+                tagline = tags[gif[0]]
+            replyStatus("@" + search.user.screen_name + " hi, here is " + form
+                        + " :) have a nice day <3\n\n(cr to: @/" + gif[2] + ")\n#CIX #씨아이엑스 "
+                        + tagline + "\n" + gif[1], search.id, media=None)
     except:
         alert.error(sys.exc_info()[1])
 
@@ -95,7 +119,7 @@ def getTags(membres):
     global tags
     res = ""
     a = 1
-    for pers in membres[1:5]:
+    for pers in membres[1:6]:
         if(pers): res += tags[a] + " "
         a+=1
     if(res == ""): res += tags[0]

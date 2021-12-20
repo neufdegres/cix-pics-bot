@@ -22,7 +22,6 @@ api = getApi()
 
 def getRandomGif(username, member):
     results = api.GetUserTimeline(screen_name=username, include_rts=False, count=100)
-    valid = False
     while(True):
         n = randint(0,len(results)-1)
         tweet = results[n]

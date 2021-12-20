@@ -44,18 +44,32 @@ def getImg(member):
 
     except:
         alert.error(sys.exc_info()[1])
+        
+def getRandImg():
+    try:
+        req = "SELECT * FROM pics ORDER BY RAND()"
+        cursor.execute(req)
+
+        results = cursor.fetchall()
+
+        while(True):
+            for line in results:
+                return [line[1], line[2]]
+
+    except:
+        alert.error(sys.exc_info()[1])
 
 def findMember(textBrut):
     text = deleteAtUser(textBrut)
     try:
-        req = "SELECT * FROM members;"
+        req = "SELECT * FROM designations;"
         cursor.execute(req)
 
         results = cursor.fetchall()
 
         for name in results:
             if(name[1] in text.lower()):
-                return name[0]
+                return name[2]
         return None
 
     except:
@@ -110,20 +124,22 @@ def newMention(tweetID):
 
     except:
         alert.error(sys.exc_info()[1])
-
+        
 def getGifAccUser(member):
     try:
         if member == None:
-            req = "SELECT * FROM gif_accs ORDER BY RAND()"
+            req = "SELECT username FROM gifs_accs ORDER BY RAND()"
         else:
-            req = "SELECT * FROM gif_accs WHERE id_member=" + str(member)+ " ORDER BY RAND()"
+            req = "SELECT gifs_accs.username FROM gifs_accs, members_gifs WHERE \
+                    (gifs_accs.id = members_gifs.idAccount && members_gifs.idMember=" \
+                    + str(member)+ ") ORDER BY RAND() "
         cursor.execute(req)
 
         results = cursor.fetchall()
 
         while(True):
             for line in results:
-                return line[1]
+                return line[0]
 
     except:
         alert.error(sys.exc_info()[1])
