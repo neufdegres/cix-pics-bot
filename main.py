@@ -48,11 +48,11 @@ def replyStatus(update, inReplyTo, media):
 def getCommande(texte):
     global hello
     if(texte.startswith("RT @cixpicsbot:")): return None
-    if("give me a pic" in texte.lower()): return "pic"
+    if(("give me a pic" in texte.lower()) or ("give me a picture" in texte.lower())): return "pic"
     if("give me a gif" in texte.lower()): return "gif"
     if("hello @cixpicsbot" in texte.lower()): 
         choix = ["pic", "gif"]
-        nbr = random.randint(0, 2)
+        nbr = random.randint(0, 1)
         hello = True
         return choix[nbr]
 
@@ -84,7 +84,7 @@ def replyPic(search):
     pic = getPic(bdd.findMember(search.text))
     try:
         if(hello):
-            replyStatus("hello @" + search.user.screen_name +
+            replyStatus("@" + search.user.screen_name + " hello @" + search.user.screen_name +
                         " ! have a nice day <3\n\n#CIX #씨아이엑스 " +
                         tags[pic[0]], search.id, media=pic[1])
         else:
@@ -101,7 +101,7 @@ def replyGif(search):
     gif = getGif(bdd.findMember(search.text))
     try:
         if(hello):
-            replyStatus("hello @" + search.user.screen_name + 
+            replyStatus("@" + search.user.screen_name + " hello @" + search.user.screen_name + 
                         " ! have a nice day <3\n\n (cr to: @/" + gif[2] 
                         + ")\n#CIX #씨아이엑스 "+ getTags(gif[3]) + "\n" + gif[1],
                         search.id, media=None)
