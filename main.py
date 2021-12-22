@@ -48,7 +48,9 @@ def replyStatus(update, inReplyTo, media):
 def getCommande(texte):
     global hello
     if(texte.startswith("RT @cixpicsbot:")): return None
-    if(("give me a pic" in texte.lower()) or ("give me a picture" in texte.lower())): return "pic"
+    if(("give me a pic" in texte.lower()) 
+        or ("give me a picture" in texte.lower())
+        or ("give me a photo" in texte.lower())): return "pic"
     if("give me a gif" in texte.lower()): return "gif"
     if("hello @cixpicsbot" in texte.lower()): 
         choix = ["pic", "gif"]
