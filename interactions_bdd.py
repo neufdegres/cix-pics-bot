@@ -35,7 +35,7 @@ def inserer(first, last, member): # update la base de donnnés
 
 def getImg(member):
     try:
-        req = "SELECT * FROM pics WHERE id_member=" + str(member)+ " ORDER BY RAND()"
+        req = "SELECT * FROM pics_save WHERE id_member=" + str(member)+ " ORDER BY RAND()"
         cursor.execute(req)
 
         results = cursor.fetchall()
@@ -50,14 +50,14 @@ def getImg(member):
         
 def getRandImg():
     try:
-        req = "SELECT * FROM pics ORDER BY RAND()"
+        req = "SELECT * FROM pics_save ORDER BY RAND()"
         cursor.execute(req)
 
         results = cursor.fetchall()
 
         while(True):
             for line in results:
-                return [line[1], line[2]]
+                return [line[1], line[2]] # A MODIFIER !! (ORDRE DES COLONES)
 
     except:
         print(traceback.format_exc())

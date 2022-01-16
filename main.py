@@ -92,6 +92,7 @@ def replyPic(search):
         else:
             replyStatus("@" + search.user.screen_name + " hi, here is a pic of " + names[pic[0]]
                         + " :) have a nice day <3\n\n#CIX #씨아이엑스 " + tags[pic[0]], search.id, media=pic[1])
+            hello = False
     except:
         print(traceback.format_exc())
         alert.error(sys.exc_info()[1])
