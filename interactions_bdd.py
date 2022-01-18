@@ -23,7 +23,7 @@ def deconnexion():
 
 def inserer(first, last, member): # update la base de donnnés
     while(first<=last) : # last = numero de la dernière image non mise
-        req = 'INSERT INTO pics(link,id_member) VALUES(%s, %s)'
+        req = 'INSERT INTO pics(link,idMember) VALUES(%s, %s)'
         infos = ("/home/ubuntu/picture_bot/pics/" + str(member) + "/" + str(first) + ".jpg", member)
 
         cursor.execute(req, infos)
@@ -35,7 +35,7 @@ def inserer(first, last, member): # update la base de donnnés
 
 def getImg(member):
     try:
-        req = "SELECT * FROM pics_save WHERE id_member=" + str(member)+ " ORDER BY RAND()"
+        req = "SELECT * FROM pics WHERE idMember=" + str(member)+ " ORDER BY RAND()"
         cursor.execute(req)
 
         results = cursor.fetchall()
@@ -50,7 +50,7 @@ def getImg(member):
         
 def getRandImg():
     try:
-        req = "SELECT * FROM pics_save ORDER BY RAND()"
+        req = "SELECT * FROM pics ORDER BY RAND()"
         cursor.execute(req)
 
         results = cursor.fetchall()
