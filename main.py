@@ -108,6 +108,7 @@ def replyGif(search):
                         " ! have a nice day <3\n\n (cr to: @/" + gif[2] 
                         + ")\n#CIX #씨아이엑스 "+ getTags(gif[3]) + "\n" + gif[1],
                         search.id, media=None)
+            hello = False
         else:
             if(gif[0] == None): 
                 form = "your gif"
