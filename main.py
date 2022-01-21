@@ -92,7 +92,6 @@ def replyPic(search):
         else:
             replyStatus("@" + search.user.screen_name + " hi, here is a pic of " + names[pic[0]]
                         + " :) have a nice day <3\n\n#CIX #씨아이엑스 " + tags[pic[0]], search.id, media=pic[1])
-            hello = False
     except:
         print(traceback.format_exc())
         alert.error(sys.exc_info()[1])
@@ -108,7 +107,6 @@ def replyGif(search):
                         " ! have a nice day <3\n\n (cr to: @/" + gif[2] 
                         + ")\n#CIX #씨아이엑스 "+ getTags(gif[3]) + "\n" + gif[1],
                         search.id, media=None)
-            hello = False
         else:
             if(gif[0] == None): 
                 form = "your gif"
@@ -135,12 +133,14 @@ def getTags(membres):
 
 def start():
     global tweets
+    global hello
     stop = False
     err = None
     alert.updateDN(True)
     while(not stop):
         try:
             search("to%3Acixpicsbot OR %40cixpicsbot -from%3Acixpicsbot","5")
+            if (hello) : hello = False
             time.sleep(15) 
         except:
             print(traceback.format_exc())
