@@ -1,9 +1,9 @@
+import os
 from config import getApi
 import alert
 import mysql.connector as MC
 import sys
 import traceback
-
 
 api = getApi()
 
@@ -80,6 +80,23 @@ def findMember(textBrut):
         print(traceback.format_exc())
         alert.error(sys.exc_info()[1])
 
+def find_era(textBrut): # pas encore implémenté
+    text = deleteAtUser(textBrut)
+    try:
+        req = "SELECT * FROM eras;"
+        cursor.execute(req)
+        
+        results = cursor.fetchall()
+        
+        for era in results:
+            if(era[1] in text.lower()):
+                return era[0] # id de l'era
+        return None
+    
+    except:
+        print(traceback.format_exc())
+        alert.error(sys.exc_info()[1])        
+
 def deleteAtUser(text):
     # string to char[]
     cList = [char for char in text]
@@ -152,3 +169,27 @@ def getGifAccUser(member):
     except:
         print(traceback.format_exc())
         alert.error(sys.exc_info()[1])
+        
+def get_count_member_pics(id_member):
+    try:
+        req = "SELECT * FROM pics WHERE idMember="+ str(id_member) + ";"
+        cursor.execute(req)
+        
+        results = cursor.fetchall()
+        
+        return len(results)
+    
+    except:
+        print(traceback.format_exc())
+     
+def get_last_pic_to_add(id_member):
+    dossiers = os.listdir('./PICS/' + str(id_member))
+    return len(dossiers)
+            
+def update_database():
+    # inserer(get_count_member_pics(0)+1, get_last_pic_to_add(0), 0)
+    inserer(get_count_member_pics(1)+1, get_last_pic_to_add(1), 1)
+    inserer(get_count_member_pics(2)+1, get_last_pic_to_add(2), 2)
+    inserer(get_count_member_pics(3)+1, get_last_pic_to_add(3), 3)
+    inserer(get_count_member_pics(4)+1, get_last_pic_to_add(4), 4)
+    inserer(get_count_member_pics(5)+1, get_last_pic_to_add(5), 5)

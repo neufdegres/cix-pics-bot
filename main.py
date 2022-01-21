@@ -19,7 +19,28 @@ tags = ["#BX #승훈 #배진영 #용희 #현석", "#BX #이병곤 #병곤 #BYOUN
         "#용희 #김용희 #YONGHEE", "#배진영 #BAEJINYOUNG",
         "#현석 #윤현석 #HYUNSUK"]
 
-def getPic(member):
+def get_strings(id):
+    member = {
+        0 : {"name" : "cix", "tags" : "#BX #승훈 #배진영 #용희 #현석"},
+        1 : {"name" : "bx", "tags" : "#BX #이병곤 #병곤 #BYOUNGGON"},
+        2 : {"name" : "seunghun", "tags" : "#승훈 #김승훈 #SEUNGHUN"},
+        3 : {"name" : "yonghee", "tags" : "#용희 #김용희 #YONGHEE"},
+        4 : {"name" : "bae jinyoung", "tags" : "#배진영 #BAEJINYOUNG"},
+        5 : {"name" : "hyunsuk", "tags" : "#현석 #윤현석 #HYUNSUK"},
+        12 : {"name" : "gonhun", "tags" : "#BX #승훈"},
+        13 : {"name" : "gonhee", "tags" : "#BX #배진영"},
+        14 : {"name" : "gonbae", "tags" : "#BX #용희"},
+        15 : {"name" : "gonsuk", "tags" : "#BX #현석"},
+        23 : {"name" : "hunhee", "tags" : "#승훈 #용희"},
+        24 : {"name" : "baehun", "tags" : "#승훈 #배진영"},
+        25 : {"name" : "seunghyun", "tags" : "#승훈 #현석"},
+        34 : {"name" : "yongbae", "tags" : "#용희 #배진영"},
+        35 : {"name" : "yongsuk", "tags" : "#용희 #현석"},
+        45 : {"name" : "yoonbae", "tags" : "#배진영 #현석"}
+    }
+    return member[id];
+
+def get_pic(member):
     if(member == None): 
         randPic = bdd.getRandImg();
         pic = randPic[0]
@@ -27,25 +48,28 @@ def getPic(member):
     else : 
         pic = bdd.getImg(member)
         
-    return [member, pic]
+    # return [member, pic]
+    return {"member_id" : member, "link" : pic}
 
-def getGif(member):
+def get_gif(member):
     """ 
-    0: numero du membre
-    1: lien du gif
-    2: username du gifeur
-    3: liste des booleens des hashtags
+    return {"member_id", "link", "user", "tags"}
     """
     if(member == 0): member = None
-    if(member == None): acc = bdd.getGifAccUser(None)
-    else: acc = bdd.getGifAccUser(member)
-    link = gifs.getRandomGif(acc, member)
-    return [member, link[0], link[1], link[2]]
+    max_tries = 5
+    while(max_tries > 0) :
+        try :
+            if(member == None): acc = bdd.getGifAccUser(None)
+            else: acc = bdd.getGifAccUser(member)
+            link = gifs.getRandomGif(acc, member)
+            return {"member_id" : member, "link" : link[0], "user" : link[1], "tags" : link[2]}
+        except :
+            max_tries -= 1
 
-def replyStatus(update, inReplyTo, media):
+def reply_status(update, inReplyTo, media):
     api.PostUpdate(update, media=media, in_reply_to_status_id=inReplyTo)
 
-def getCommande(texte):
+def get_commande(texte):
     global hello
     if(texte.startswith("RT @cixpicsbot:")): return None
     elif(("give me a pic" in texte.lower()) 
@@ -62,15 +86,15 @@ def search(research, howMany):
     searchResults = api.GetSearch(raw_query="q="+research+"&result_type=recent&count="+howMany)
     for search in searchResults:
         if(not bdd.dejaRepondu(search.id)):
+            cmd = get_commande(search.text)
+            if(cmd != None): send_reply(search, cmd)
             bdd.newMention(search.id)
-            cmd = getCommande(search.text)
-            if(cmd != None): sendReply(search, cmd)
 
-def sendReply(search, cmd):
+def send_reply(search, cmd):
     global tweets
     try:
-        if(cmd == "pic"): replyPic(search)
-        elif(cmd == "gif"): replyGif(search)
+        if(cmd == "pic"): reply_pic(search)
+        elif(cmd == "gif"): reply_gif(search)
         print("Un tweet a bien été envoyé à @" + search.user.screen_name + " ! (" + str(tweets+1) + ")")
         tweets += 1
         if (tweets % 30 == 0): alert.statut(tweets)
@@ -79,49 +103,52 @@ def sendReply(search, cmd):
         print(traceback.format_exc())
         alert.error(sys.exc_info()[1])
 
-def replyPic(search):
+def reply_pic(search):
     global hello
     global names
     global tags
-    pic = getPic(bdd.findMember(search.text))
+    pic = get_pic(bdd.findMember(search.text))
     try:
+        strings = get_strings(pic["member_id"])
         if(hello):
-            replyStatus("@" + search.user.screen_name + " hello @" + search.user.screen_name +
+            reply_status("@" + search.user.screen_name + " hello @" + search.user.screen_name +
                         " ! have a nice day <3\n\n#CIX #씨아이엑스 " +
-                        tags[pic[0]], search.id, media=pic[1])
+                        tags[pic["member_id"]], search.id, media=pic["link"])
         else:
-            replyStatus("@" + search.user.screen_name + " hi, here is a pic of " + names[pic[0]]
-                        + " :) have a nice day <3\n\n#CIX #씨아이엑스 " + tags[pic[0]], search.id, media=pic[1])
+            reply_status("@" + search.user.screen_name + " hi, here is a pic of " + strings["name"]
+                        + " :) have a nice day <3\n\n#CIX #씨아이엑스 " + strings["tags"],
+                        search.id, media=pic["link"])
     except:
         print(traceback.format_exc())
         alert.error(sys.exc_info()[1])
-
-def replyGif(search):
+     
+def reply_gif(search):
     global names
     global tags
     global hello
-    gif = getGif(bdd.findMember(search.text))
+    gif = get_gif(bdd.findMember(search.text))
     try:
         if(hello):
-            replyStatus("@" + search.user.screen_name + " hello @" + search.user.screen_name + 
-                        " ! have a nice day <3\n\n (cr to: @/" + gif[2] 
-                        + ")\n#CIX #씨아이엑스 "+ getTags(gif[3]) + "\n" + gif[1],
+            reply_status("@" + search.user.screen_name + " hello @" + search.user.screen_name + 
+                        " ! have a nice day <3\n\n (cr to: @/" + gif["user"] 
+                        + ")\n#CIX #씨아이엑스 "+ get_tags_gif(gif["tags"]) + "\n" + gif["link"],
                         search.id, media=None)
         else:
-            if(gif[0] == None): 
+            if(gif["member_id"] == None): 
                 form = "your gif"
-                tagline = getTags(gif[3])
+                tagline = get_tags_gif(gif["tags"])
             else: 
-                form = "a gif of "  + names[gif[0]]
-                tagline = tags[gif[0]]
-            replyStatus("@" + search.user.screen_name + " hi, here is " + form
-                        + " :) have a nice day <3\n\n(cr to: @/" + gif[2] + ")\n#CIX #씨아이엑스 "
-                        + tagline + "\n" + gif[1], search.id, media=None)
+                strings = get_strings(gif["member_id"])
+                form = "a gif of "  + strings["name"]
+                tagline = strings["tags"]
+            reply_status("@" + search.user.screen_name + " hi, here is " + form
+                        + " :) have a nice day <3\n\n(cr to: @/" + gif["user"] + ")\n#CIX #씨아이엑스 "
+                        + tagline + "\n" + gif["link"], search.id, media=None)
     except:
         print(traceback.format_exc())
         alert.error(sys.exc_info()[1])
 
-def getTags(membres):
+def get_tags_gif(membres):
     global tags
     res = ""
     a = 1
