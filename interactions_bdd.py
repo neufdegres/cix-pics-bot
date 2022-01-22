@@ -50,14 +50,14 @@ def getImg(member):
         
 def getRandImg():
     try:
-        req = "SELECT * FROM pics ORDER BY RAND()"
+        req = "SELECT * FROM pics ORDER BY RAND() LIMIT 1"
         cursor.execute(req)
 
         results = cursor.fetchall()
 
         while(True):
             for line in results:
-                return [line[1], line[2]] # A MODIFIER !! (ORDRE DES COLONES)
+                return [line[1], line[2]]
 
     except:
         print(traceback.format_exc())
