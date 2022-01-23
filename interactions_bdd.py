@@ -183,7 +183,7 @@ def get_count_member_pics(id_member):
         print(traceback.format_exc())
      
 def get_last_pic_to_add(id_member):
-    dossiers = os.listdir('./PICS/' + str(id_member))
+    dossiers = os.listdir('./pics/' + str(id_member))
     return len(dossiers)
             
 def update_database():

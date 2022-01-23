@@ -3,7 +3,7 @@ admin/
 tables/
 autre/
 old/
-PICS/
+pics/
 vps/
 tests/
 admin.py
