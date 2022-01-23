@@ -14,11 +14,6 @@ api = getApi()
 tweets = 0
 hello = False
 
-names = ['cix', 'bx', 'seunghun', 'yonghee', 'bae jinyoung', 'hyunsuk']
-tags = ["#BX #승훈 #배진영 #용희 #현석", "#BX #이병곤 #병곤 #BYOUNGGON", "#승훈 #김승훈 #SEUNGHUN",
-        "#용희 #김용희 #YONGHEE", "#배진영 #BAEJINYOUNG",
-        "#현석 #윤현석 #HYUNSUK"]
-
 def get_strings(id):
     member = {
         0 : {"name" : "cix", "tags" : "#BX #승훈 #배진영 #용희 #현석"},
@@ -113,7 +108,7 @@ def reply_pic(search):
         if(hello):
             reply_status("@" + search.user.screen_name + " hello @" + search.user.screen_name +
                         " ! have a nice day <3\n\n#CIX #씨아이엑스 " +
-                        tags[pic["member_id"]], search.id, media=pic["link"])
+                        strings["tags"], search.id, media=pic["link"])
         else:
             reply_status("@" + search.user.screen_name + " hi, here is a pic of " + strings["name"]
                         + " :) have a nice day <3\n\n#CIX #씨아이엑스 " + strings["tags"],
@@ -149,7 +144,9 @@ def reply_gif(search):
         alert.error(sys.exc_info()[1])
 
 def get_tags_gif(membres):
-    global tags
+    tags = ["#BX #승훈 #배진영 #용희 #현석", "#BX #이병곤 #BYOUNGGON", "#승훈 #김승훈 #SEUNGHUN",
+        "#용희 #김용희 #YONGHEE", "#배진영 #BAEJINYOUNG",
+        "#현석 #윤현석 #HYUNSUK"]
     res = ""
     a = 1
     for pers in membres[1:]:
