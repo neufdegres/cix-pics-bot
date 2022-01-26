@@ -33,38 +33,35 @@ def inserer(first, last, member): # update la base de donnnés
 
     print("Fini !")
 
-def getImg(member):
-    try:
-        req = "SELECT * FROM pics WHERE idMember=" + str(member)+ " ORDER BY RAND()"
-        cursor.execute(req)
-
-        results = cursor.fetchall()
-
-        while(True):
-            for line in results:
-                return line[1]
-
-    except:
-        print(traceback.format_exc())
-        alert.error(sys.exc_info()[1])
+def get_pic_from_db(member, era, option):
+    member_str = era_str = option_str = where = and_1 = and_2 = ""
+    
+    if member != None : member_str = " idMember=" + str(member)
+    if era != None : era_str = " idEra=" + str(era) 
+    if option != None : option_str = " idOption=" + str(option) 
+    
+    if not member == era == option == None : where = " WHERE"
+    if (member != None and era != None) or (member != None and option != None) \
+        or (era != None and option != None) : and_1 = " AND"
+    if (member != None) and (era != None) and (option != None) : and_2 = " AND"
         
-def getRandImg():
     try:
-        req = "SELECT * FROM pics ORDER BY RAND() LIMIT 1"
+        req = "SELECT * FROM pics" + where + member_str + and_1 + era_str \
+            + and_2 + option_str + " ORDER BY RAND() LIMIT 1;"
+        print(req)
         cursor.execute(req)
 
         results = cursor.fetchall()
 
         while(True):
             for line in results:
-                return [line[1], line[2]]
+                return {"link" : line[1], "member_id" : line[2]}
 
     except:
         print(traceback.format_exc())
         alert.error(sys.exc_info()[1])
-
-def findMember(textBrut):
-    text = deleteAtUser(textBrut)
+    
+def findMember(text):
     try:
         req = "SELECT * FROM designations;"
         cursor.execute(req)
@@ -73,15 +70,15 @@ def findMember(textBrut):
 
         for name in results:
             if(name[1] in text.lower()):
-                return name[2]
+                return name[2] # member's id
         return None
 
     except:
         print(traceback.format_exc())
         alert.error(sys.exc_info()[1])
 
-def find_era(textBrut): # pas encore implémenté
-    text = deleteAtUser(textBrut)
+def find_era(text): 
+    print(text)
     try:
         req = "SELECT * FROM eras;"
         cursor.execute(req)
@@ -90,24 +87,15 @@ def find_era(textBrut): # pas encore implémenté
         
         for era in results:
             if(era[1] in text.lower()):
-                return era[0] # id de l'era
-        return None
+                return {"id" : era[0], "name" : era[1]}
+        return {"id" : None, "name" : None}
     
     except:
         print(traceback.format_exc())
         alert.error(sys.exc_info()[1])        
 
-def deleteAtUser(text):
-    # string to char[]
-    cList = [char for char in text]
-    a = 0
-    for c in cList:
-        if(c == '@'):
-            while(a+1 != len(cList) and cList[a+1] != ' '):
-                del cList[a+1]
-        a+=1
-    str1 = ""
-    return str1.join(cList) # char[] to string
+def find_option(text):
+    return None
 
 def remplissageAux():
     results = api.GetSearch(raw_query="q=to%3Acixpicsbot OR %40cixpicsbot -from%3Acixpicsbot&result_type=recent&count=50")
@@ -169,6 +157,8 @@ def getGifAccUser(member):
     except:
         print(traceback.format_exc())
         alert.error(sys.exc_info()[1])
+        
+# for updating the database
         
 def get_count_member_pics(id_member):
     try:

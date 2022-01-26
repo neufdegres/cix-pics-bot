@@ -14,11 +14,6 @@ api = getApi()
 tweets = 0
 hello = False
 
-names = ['cix', 'bx', 'seunghun', 'yonghee', 'bae jinyoung', 'hyunsuk']
-tags = ["#BX #승훈 #배진영 #용희 #현석", "#BX #이병곤 #병곤 #BYOUNGGON", "#승훈 #김승훈 #SEUNGHUN",
-        "#용희 #김용희 #YONGHEE", "#배진영 #BAEJINYOUNG",
-        "#현석 #윤현석 #HYUNSUK"]
-
 def get_strings(id):
     member = {
         0 : {"name" : "cix", "tags" : "#BX #승훈 #배진영 #용희 #현석"},
@@ -40,16 +35,14 @@ def get_strings(id):
     }
     return member[id];
 
-def get_pic(member):
-    if(member == None): 
-        randPic = bdd.getRandImg();
-        pic = randPic[0]
-        member = randPic[1]
-    else : 
-        pic = bdd.getImg(member)
-        
-    # return [member, pic]
-    return {"member_id" : member, "link" : pic}
+def get_pic(member, era, option):
+    """ 
+    return {"member_id", "link"}
+    """
+    res = bdd.get_pic_from_db(member, era, option);
+    link = res["link"]
+    if member == None : member = res["member_id"]
+    return {"member_id" : member, "link" : link}
 
 def get_gif(member):
     """ 
@@ -103,30 +96,43 @@ def send_reply(search, cmd):
         print(traceback.format_exc())
         alert.error(sys.exc_info()[1])
 
+def deleteAtUser(text):
+    # string to char[]
+    cList = [char for char in text]
+    a = 0
+    for c in cList:
+        if(c == '@'):
+            while(a+1 != len(cList) and cList[a+1] != ' '):
+                del cList[a+1]
+        a+=1
+    str1 = ""
+    return str1.join(cList) # char[] to string
+
 def reply_pic(search):
     global hello
-    global names
-    global tags
-    pic = get_pic(bdd.findMember(search.text))
+    tweet = deleteAtUser(search.text)
+    member_id = bdd.findMember(tweet)
+    era = bdd.find_era(tweet)
+    option = bdd.find_option(tweet)
+    pic = get_pic(member_id, era["id"], None)
     try:
         strings = get_strings(pic["member_id"])
         if(hello):
-            reply_status("@" + search.user.screen_name + " hello @" + search.user.screen_name +
-                        " ! have a nice day <3\n\n#CIX #씨아이엑스 " +
-                        tags[pic["member_id"]], search.id, media=pic["link"])
-        else:
-            reply_status("@" + search.user.screen_name + " hi, here is a pic of " + strings["name"]
-                        + " :) have a nice day <3\n\n#CIX #씨아이엑스 " + strings["tags"],
-                        search.id, media=pic["link"])
+            reply = "@" + search.user.screen_name + " hello @" + search.user.screen_name + \
+                        " ! have a nice day <3\n\n#CIX #씨아이엑스 " + strings["tags"]
+        else : # a modifier quand les options seront implémentés
+            reply = "@" + search.user.screen_name + " hi, here is a pic of " + strings["name"]
+            if era["name"] != None : reply += " from " + era["name"] + " era"
+            reply += " :) have a nice day <3\n\n#CIX #씨아이엑스 " + strings["tags"]
+        reply_status(reply, search.id, media=pic["link"])
     except:
         print(traceback.format_exc())
         alert.error(sys.exc_info()[1])
      
-def reply_gif(search):
-    global names
-    global tags
+def reply_gif(search): # à ne pas modifier (pour le moment)
     global hello
-    gif = get_gif(bdd.findMember(search.text))
+    tweet = deleteAtUser(search.text)
+    gif = get_gif(bdd.findMember(tweet))
     try:
         if(hello):
             reply_status("@" + search.user.screen_name + " hello @" + search.user.screen_name + 
@@ -149,7 +155,9 @@ def reply_gif(search):
         alert.error(sys.exc_info()[1])
 
 def get_tags_gif(membres):
-    global tags
+    tags = ["#BX #승훈 #배진영 #용희 #현석", "#BX #이병곤 #BYOUNGGON", "#승훈 #김승훈 #SEUNGHUN",
+        "#용희 #김용희 #YONGHEE", "#배진영 #BAEJINYOUNG",
+        "#현석 #윤현석 #HYUNSUK"]
     res = ""
     a = 1
     for pers in membres[1:]:

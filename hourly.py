@@ -16,7 +16,7 @@ def tweet(update, media) :
 
 def getPic():
     member = random.randint(0, 5)
-    pic = bdd.getImg(member)
+    pic = bdd.get_pic_from_db(member, None, None)
     return [member, pic]
 
 def main():
