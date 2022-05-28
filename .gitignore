@@ -1,0 +1,13 @@
+__pycache__/
+admin/
+tables/
+autre/
+old/
+pics/
+vps/
+tests/
+admin.py
+main_special.py
+download.py
+naver_downloader.py
+launcher.sh
