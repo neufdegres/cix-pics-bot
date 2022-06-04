@@ -1,14 +1,12 @@
 __pycache__/
-.vscode/
 admin/
-tables/
-autre/
-old/
+other/
 pics/
-vps/
 tests/
+updates/
 admin.py
 main_special.py
 download.py
 naver_downloader.py
+naver_downloader_alt.py
 launcher.sh

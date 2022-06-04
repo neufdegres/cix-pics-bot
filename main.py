@@ -92,6 +92,9 @@ def reply_status(update, inReplyTo, media):
 def get_commande(texte):
     global hello
     if(texte.startswith("RT @cixpicsbot:")): return None
+    elif(("@cixpicsbot stats" in texte.lower()) 
+        or ("stats @cixpicsbot" in texte.lower())):
+        return "stats"
     elif(("give me a pic" in texte.lower()) 
         or ("give me a picture" in texte.lower())
         or ("give me a photo" in texte.lower())): return "pic"
@@ -113,8 +116,9 @@ def search(research):
 def send_reply(search, cmd):
     global tweets
     try:
-        if(cmd == "pic"): reply_pic(search)
-        elif(cmd == "gif"): reply_gif(search)
+        if cmd == "pic" : reply_pic(search)
+        elif cmd == "gif" : reply_gif(search)
+        elif cmd == "stats" : reply_stats(search)
         tweets += 1
         if (tweets % 30 == 0): alert.statut(tweets)
         time.sleep(5)
@@ -162,6 +166,7 @@ def reply_pic(search):
                 reply = "@" + username + " sorry, i couldn't answer your request :( here is a pic of " \
                     + strings["name"] + " anyway :)\n\n#CIX #씨아이엑스 " + strings["tags"]
         reply_status(reply, search.id, media=pic["link"])
+        db.update_replies(search.user.id)
         print("(" + str(tweets+1) + ") à " + username + " (pic #" + pic["id"] + ") " + time)
     except:
         print(traceback.format_exc())
@@ -191,7 +196,22 @@ def reply_gif(search):
             reply_status("@" + username + " hi, here is " + form
                         + " :) have a nice day <3\n\n(cr to: @/" + gif["user"] + ")\n#CIX #씨아이엑스 "
                         + tagline + "\n" + gif["link"], search.id, media=None)
+        db.update_replies(search.user.id)
         print("(" + str(tweets+1) + ") à " + username + " (gif " + gif["origine"] + ") " + time)
+    except:
+        print(traceback.format_exc())
+        alert.error(sys.exc_info()[1])
+
+def reply_stats(search):
+    try:
+        now = get_time()
+        time = now.strftime("%H:%M-%d/%m")
+        username = search.user.screen_name
+        count = db.get_user_count(search.user.id)
+        end = " times." if count > 1 else " time."
+        reply = "@" + username + " hi, you used this bot a total of " + str(count) + str(end)
+        reply_status(reply, search.id, media=None)
+        print("(" + str(tweets+1) + ") à " + username + " (stats) " + time)
     except:
         print(traceback.format_exc())
         alert.error(sys.exc_info()[1])

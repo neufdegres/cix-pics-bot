@@ -59,7 +59,7 @@ def find_member(text):
 
         for name in results:
             for word in tab :
-                if name[1] == word.lower() :
+                if name[1] in word.lower() :
                     return name[2] # member's id
         return None
 
@@ -131,7 +131,51 @@ def get_gif_acc_user(member):
     except:
         print(traceback.format_exc())
         alert.error(sys.exc_info()[1])
+
+def add_new_user(userID):
+    try:
+        req = 'INSERT INTO users_stats(user) VALUES('+str(userID)+');'
+        cursor.execute(req)
+        conn.commit()
+
+    except:
+        print(traceback.format_exc())
         
+def update_user(userID, newcount):
+    try:
+        req = 'UPDATE users_stats SET count=' + str(newcount) + ' WHERE user=' + str(userID) + ';'
+        cursor.execute(req)
+        conn.commit()
+
+    except:
+        print(traceback.format_exc())
+    
+def get_user_count(userID):
+    try:
+        req = "SELECT count FROM users_stats WHERE user=" + str(userID) + ";"
+        cursor.execute(req)
+
+        results = cursor.fetchall()
+        
+        if len(results) == 0 : return 0
+
+        for ligne in results:
+            return int(ligne[0])
+        
+        return -1
+
+    except:
+        print(traceback.format_exc())
+    
+def update_replies(userID):
+    if(userID == "1107350682716327936" or userID == "1374081770849759238"
+                or userID == "1400947929653862401") : return
+    count = get_user_count(userID)
+    if count == 0:
+        add_new_user(userID)
+    else:
+        update_user(userID, count+1)
+
 # for updating the database
 
 def inserer(first, last, member): # update la base de donnnés
