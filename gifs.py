@@ -1,5 +1,6 @@
 from random import randint
 from config import getApi
+from parsing import is_only_hello, is_era
 
 api = getApi()
 
@@ -10,14 +11,14 @@ def get_random_gif(username, member):
         tweet = results[n]
         origine = tweet.id_str
         if(is_right_gif(tweet, member)): break
-    return [get_gif_link(tweet), username, get_hashtags(tweet), origine]
+    return [get_gif_link(tweet), username, get_hashtags_tweet(tweet), origine]
 
 def is_right_gif(tweet, member):
     # si le tweet ne contient ni gif ni hashtag on renvoie False
     if(tweet.media == None): return False
     if(not("animated_gif" in str(tweet.media))): return False
     if(len(tweet.hashtags) == 0): return False
-    tags = get_hashtags(tweet)
+    tags = get_hashtags_tweet(tweet)
     absent = 0
     for n in tags: 
         if(not n): absent+=1
@@ -28,7 +29,7 @@ def is_right_gif(tweet, member):
         if(not tags[member]): return False
     return True
     
-def get_hashtags(tweet):
+def get_hashtags_tweet(tweet):
     liste = []
     membres = [False, False, False, False, False, False]
     i=0
@@ -48,3 +49,20 @@ def get_hashtags(tweet):
 def get_gif_link(tweet):
     return tweet.media[0].display_url
     
+def get_tags(membres):
+    tags = ["#BX #승훈 #배진영 #용희 #현석", "#BX #이병곤 #BYOUNGGON", "#승훈 #김승훈 #SEUNGHUN",
+        "#용희 #김용희 #YONGHEE", "#배진영 #BAEJINYOUNG",
+        "#현석 #윤현석 #HYUNSUK"]
+    res = ""
+    a = 1
+    for pers in membres[1:]:
+        if(pers): res += tags[a] + " "
+        a+=1
+    if res == "" or len(res) == 5  : res = tags[0]
+    return res
+
+def is_blamable(cmd):
+    if is_only_hello(cmd) : return False
+    if cmd["member"] != None and (cmd["member"] == 0 or cmd["member"] > 5) : return True
+    if is_era(cmd) : return True
+    return False
