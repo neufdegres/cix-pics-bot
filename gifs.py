@@ -36,7 +36,7 @@ def get_hashtags_tweet(tweet):
     while(i < len(tweet.hashtags)):
         liste.append(tweet.hashtags[i].text)
         i+=1
-    # determiner qui sont dans ces hashtags
+    # on détermine qui sont dans ces hashtags
     for name in liste:
         if(name.lower() == "cix"): membres[0] = True
         elif(name.lower() == "bx" or "병곤" in name): membres[1] = True

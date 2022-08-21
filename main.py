@@ -20,18 +20,6 @@ def get_time():
     timezone_offset = 2.0 # to change when we'll pass to 1.0
     tzinfo = timezone(timedelta(hours=timezone_offset))
     return datetime.now(tzinfo)    
-     
-# the bot will ignore not double-tagged replies
-def is_answerable(tweet) :
-    if not tweet.in_reply_to_status_id : return True
-    if tweet.in_reply_to_screen_name != "cixpicsbot" : return True
-    tags = tweet.user_mentions
-    count = 0
-    for usr in tags :
-        if str(usr.id) == os.environ["cpb_id"]:
-            count += 1
-    if count < 2 : return False
-    return True
 
 def reply_status(update, inReplyTo, media):
     api.PostUpdate(update, media=media, in_reply_to_status_id=inReplyTo)
@@ -111,10 +99,9 @@ def search(research):
     searchResults = api.GetSearch(raw_query="q="+research+"&result_type=recent&count=5")
     for search in searchResults:
         if not db.deja_repondu(search.id) :
-            if is_answerable(search) :
-                cmd = ps.get_commande(search.text)
-                print(cmd)
-                if cmd != None : send_reply(search, cmd)
+            cmd = ps.get_commande(search.text)
+            print(cmd)
+            if cmd != None : send_reply(search, cmd)
             db.new_mention(search.id)
         
 def send_reply(tweet, cmd):

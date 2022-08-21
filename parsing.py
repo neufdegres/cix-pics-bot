@@ -24,10 +24,7 @@ def delete_mentions(tweet):
     return " ".join(tab)
     
 def is_command(param):
-    return not (param["hello"] == False 
-        and param["type"] == None 
-        and param["member"] == None 
-        and not is_era(param))
+    return param["hello"] == True or param["type"] != None
     
 def is_only_hello(param):
     return (param["hello"] == True 
