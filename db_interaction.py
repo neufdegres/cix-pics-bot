@@ -60,6 +60,7 @@ def find_member(text):
         for name in results:
             for word in tab :
                 if name[1] in word.lower() :
+                    if name[1] == "gon" and word.lower() != "gon" : continue
                     return name[2] # member's id
         return None
 
