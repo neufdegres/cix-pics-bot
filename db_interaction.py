@@ -47,21 +47,17 @@ def get_pic_from_db(member, era, option):
     except:
         print(traceback.format_exc())
         alert.error(sys.exc_info()[1])
-    
-def find_member(text):
+
+def find_member(word):
     try:
         req = "SELECT * FROM designations;"
         cursor.execute(req)
 
         results = cursor.fetchall()
-        
-        tab = text.split(" ")
 
         for name in results:
-            for word in tab :
-                if name[1] in word.lower() :
-                    if name[1] == "gon" and word.lower() != "gon" : continue
-                    return name[2] # member's id
+            if name[1] == word.lower() :
+                return name[2] # member's id
         return None
 
     except:
@@ -208,6 +204,7 @@ def get_last_pic_to_add(id_member):
     return len(dossiers)
             
 def update_database():
-    cat = [0,1,2,3,4,5,12,13,14,15,23,24,25,34,35,45]
+    cat = [0,1,2,3,4,5,12,13,14,15,23,24,25,34,35,45,
+           123,124,125,134,135,145,234,235,245,345]
     for i in cat:   
         inserer(get_count_member_pics(i)+1, get_last_pic_to_add(i), i)

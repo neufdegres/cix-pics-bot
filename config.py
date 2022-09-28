@@ -6,3 +6,4 @@ def getApi():
                     consumer_secret = os.environ['consumer_secret_cpb'],
                     access_token_key = os.environ['access_token_key_cpb'],
                     access_token_secret = os.environ['access_token_secret_cpb'])
+                    # tweet_mode='extended')

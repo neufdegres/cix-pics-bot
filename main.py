@@ -2,7 +2,6 @@ from datetime import datetime, timedelta, timezone
 from config import getApi
 import db_interaction as db
 import parsing as ps
-import os
 import sys
 import gifs
 import alert
@@ -54,6 +53,9 @@ def get_pic(member, era, option):
     as_asked = True
     attemp = 1 # max = 3 attemps 
     while(True):
+        if as_asked == True and member != None and member < 0: 
+            as_asked = False
+            member = -member
         res = db.get_pic_from_db(member, era, option);
         if res != None : break
         as_asked = False

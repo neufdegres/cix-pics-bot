@@ -63,6 +63,6 @@ def get_tags(membres):
 
 def is_blamable(cmd):
     if is_only_hello(cmd) : return False
-    if cmd["member"] != None and (cmd["member"] == 0 or cmd["member"] > 5) : return True
+    if cmd["member"] != None and (cmd["member"] <= 0 or cmd["member"] > 5) : return True
     if is_era(cmd) : return True
     return False
