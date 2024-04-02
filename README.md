@@ -1,3 +1,5 @@
 # cix pics bot
 
-bot that send automatically a random pic or gif of cix at will
+Link of the project : [Carrd](https://cixpicsbot.carrd.co/)
+
+Link of the related twitter account : [Twitter](https://twitter.com/cixpicsbot)
